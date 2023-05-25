@@ -21,10 +21,10 @@ AngHomeRad=np.multiply(AngHomeGrad,np.pi/180)
 Zpiso=0.140 # default 138
 ZpisoInt=0.10
 ZpisoEx=0.170
-Zportaherramientas=0.145
+Zportaherramientas=0.215
 Zseguridad=0.2
 ZseguridadEx=0.24
-ZseguridadPH=0.25
+ZseguridadPH=0.4
 beta=0*np.pi/180
 betaEx=10*np.pi/180
 rmin=0.17
@@ -59,10 +59,14 @@ PuntosL=np.array([
     [0.200,0.050,Zpiso-0.020,betaEx],
     [0.200,0.025,Zpiso-0.020,betaEx],
     [0.225,0.025,Zseguridad,betaEx]])
+
 PuntosTri=np.array([[0.200,0,Zseguridad,betaEx],[0.200,0,Zpiso-0.02,betaEx],[0.200,0.050,Zpiso-0.017,betaEx],[0.2433,0.025,Zpiso-0.005,betaEx],[0.200,0,Zpiso-0.015,betaEx],[0.200,0,Zseguridad,betaEx]])
 PuntosRectasParalelas=np.array([[0.200,-0.050,Zseguridad,betaEx],[0.200,-0.050,Zpiso-0.015,betaEx],[0.200,-0.100,Zpiso-0.015,betaEx],[0.200,-0.100,Zseguridad,betaEx],[0.225,-0.100,Zseguridad,betaEx],[0.225,-0.100,Zpiso,betaEx],[0.225,-0.050,Zpiso-0.005,betaEx],[0.225,-0.050,Zseguridad,betaEx],[0.250,-0.050,Zseguridad,betaEx],[0.250,-0.050,Zpiso,betaEx],[0.250,-0.100,Zpiso,betaEx],[0.250,-0.100,Zseguridad,betaEx]])
 PuntosEQTablero=np.array([[0.200,-0.125,Zseguridad,betaEx],[0.200,-0.125,Zpiso+0.005,betaEx],[0.200,-0.125,Zseguridad-0.005,betaEx],[0.210,-0.125,Zseguridad-0.005,betaEx],[0.210,-0.125,Zpiso+0.0085,betaEx],[0.210,-0.125,Zseguridad-0.005,betaEx],[0.220,-0.125,Zseguridad-0.005,betaEx],[0.220,-0.125,Zpiso+0.01,betaEx],[0.220,-0.125,Zseguridad-0.005,betaEx],[0.230,-0.125,Zseguridad-0.005,betaEx],[0.230,-0.125,Zpiso+0.015,betaEx],[0.230,-0.125,Zseguridad-0.005,betaEx],[0.240,-0.125,Zseguridad-0.005,betaEx],[0.240,-0.125,Zpiso+0.02,betaEx],[0.240,-0.125,Zseguridad+0.03,betaEx]])
 
+coorPortaHerramientasArriba=np.array([0.1,-0.2,ZseguridadPH,betaEx])
+coorPortaHerramientasAbajo=np.array([0.12,-0.21,Zportaherramientas,0])
+coorPortaHerramientasAbajoDes=np.array([0.1,-0.185,Zportaherramientas,betaEx])
 
 
 # ---------- ROS ----------
@@ -267,6 +271,40 @@ def draw_letters():
     time.sleep(1)
     for i in range(5):
         Rut2p(PuntosL[i,:],ArrTiempo[i],gripClose)
+
+    end_time = time.time()
+    Tiempo=end_time-start_time
+    print("\ntiempo de ejecucion: %.2f s" % Tiempo)
+
+@cli.command()
+def tool_load():
+    start_time = time.time()
+
+    Rut2p(coorPortaHerramientasArriba,0.3,gripOpen)
+    Rut2p(coorPortaHerramientasAbajo,0.5,gripOpen)
+    input()
+    print("Apretar gripper")
+    Rut2p(coorPortaHerramientasAbajo,0.5,gripClose)
+    print("Volviendo a home")
+    Rut2p(coorPortaHerramientasArriba,1,gripClose)
+    Rut2p(posHome,1,gripClose)
+
+    #Avisa una finalización de rutina al establecer el tiempo de ejecución de esta operación
+    end_time = time.time()
+    Tiempo=end_time-start_time
+    print("\ntiempo de ejecucion: %.2f s" % Tiempo)
+
+@cli.command()
+def tool_unload():
+    start_time = time.time()
+    Rut2p(coorPortaHerramientasArriba,0.3,gripClose)
+    Rut2p(coorPortaHerramientasAbajoDes,0.5,gripClose)
+    input()
+    print("Apretar gripper")
+    Rut2p(coorPortaHerramientasAbajoDes,0.5,gripOpen)
+    print("Volviendo a home")
+    Rut2p(coorPortaHerramientasArriba,1,gripOpen)
+    Rut2p(posHome,1,gripOpen)
 
     end_time = time.time()
     Tiempo=end_time-start_time
