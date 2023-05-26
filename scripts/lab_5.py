@@ -12,61 +12,61 @@ import click
 
 
 # ---------- Constants ----------
-posHome=np.array([0.2,0,0.242,0])
-gripClose=np.radians(-100)
-gripOpen=0
-AngHomeGrad=np.array([0,0,-90,0,-100])
-AngHomeRad=np.multiply(AngHomeGrad,np.pi/180)
+HOME=np.array([0.2,0,0.242,0])
+CLOSED_GRIPPER_ANG=np.radians(-100)
+OPEN_GRIPPER_ANG=0
+HOME_DEGREES=np.array([0,0,-90,0,-100])
+HOME_RADIANS=np.multiply(HOME_DEGREES,np.pi/180)
 
-Zpiso=0.140 # default 138
-ZpisoInt=0.10
-ZpisoEx=0.170
-Zportaherramientas=0.215
-Zseguridad=0.2
-ZseguridadEx=0.24
-ZseguridadPH=0.4
+z_floor=0.140
+z_floor_in=0.10
+z_floor_out=0.170
+z_tool=0.215
+z_safety=0.2
+z_safety_out=0.24
+z_safety_ph=0.4
 beta=0*np.pi/180
 betaEx=10*np.pi/180
 rmin=0.17
 rmax=0.29
 lim=70*np.pi/180
 
-PosArcMinIzq=np.array([[rmin*np.cos(lim),rmin*np.sin(lim),Zseguridad,0],[rmin*np.cos(lim),rmin*np.sin(lim),ZpisoInt,0]])
-PosArcMinDer=np.array([[rmin*np.cos(-lim),rmin*np.sin(-lim),ZpisoInt,0],[rmin*np.cos(-lim),rmin*np.sin(-lim),Zseguridad,0]])
-PosArcMaxDer=np.array([[rmax*np.cos(-lim),rmax*np.sin(-lim),Zseguridad,betaEx],[rmax*np.cos(-lim),rmax*np.sin(-lim),ZpisoEx-0.02,betaEx]])
-PosArcMaxIzq=np.array([[rmax*np.cos(lim),rmax*np.sin(lim),ZpisoEx-0.02,betaEx],[rmax*np.cos(lim),rmax*np.sin(lim),Zseguridad+0.015,betaEx]])
+PosArcMinIzq=np.array([[rmin*np.cos(lim),rmin*np.sin(lim),z_safety,0],[rmin*np.cos(lim),rmin*np.sin(lim),z_floor_in,0]])
+PosArcMinDer=np.array([[rmin*np.cos(-lim),rmin*np.sin(-lim),z_floor_in,0],[rmin*np.cos(-lim),rmin*np.sin(-lim),z_safety,0]])
+PosArcMaxDer=np.array([[rmax*np.cos(-lim),rmax*np.sin(-lim),z_safety,betaEx],[rmax*np.cos(-lim),rmax*np.sin(-lim),z_floor_out-0.02,betaEx]])
+PosArcMaxIzq=np.array([[rmax*np.cos(lim),rmax*np.sin(lim),z_floor_out-0.02,betaEx],[rmax*np.cos(lim),rmax*np.sin(lim),z_safety+0.015,betaEx]])
 
 PuntosD=np.array([
-    [0.200-0.025,0.150,Zseguridad,betaEx],
-    [0.200-0.025,0.150,Zpiso-0.020,betaEx],
-    [0.250-0.025,0.150,Zpiso-0.020,betaEx],
-    [0.250-0.025,0.125,Zpiso-0.020,betaEx],
-    [0.225-0.025,0.100,Zpiso-0.020,betaEx],
-    [0.200-0.025,0.125,Zpiso-0.020,betaEx],
-    [0.200-0.025,0.150,Zpiso-0.020,betaEx],
-    [0.200-0.025,0.150,Zseguridad,betaEx]])
+    [0.200-0.025,0.150,z_safety,betaEx],
+    [0.200-0.025,0.150,z_floor-0.020,betaEx],
+    [0.250-0.025,0.150,z_floor-0.020,betaEx],
+    [0.250-0.025,0.125,z_floor-0.020,betaEx],
+    [0.225-0.025,0.100,z_floor-0.020,betaEx],
+    [0.200-0.025,0.125,z_floor-0.020,betaEx],
+    [0.200-0.025,0.150,z_floor-0.020,betaEx],
+    [0.200-0.025,0.150,z_safety,betaEx]])
 PuntosJ=np.array([
-    [0.250,0.100,Zseguridad+0.01,betaEx],
-    [0.250,0.100,Zpiso+0.01,betaEx],
-    [0.250,0.050,Zpiso,betaEx],
-    [0.250,0.075,Zpiso,betaEx],
-    [0.200,0.075,Zpiso-0.012,betaEx],
-    [0.200,0.100,Zpiso-0.012,betaEx],
-    [0.200,0.100,Zseguridad,betaEx]])
+    [0.250,0.100,z_safety+0.01,betaEx],
+    [0.250,0.100,z_floor+0.01,betaEx],
+    [0.250,0.050,z_floor,betaEx],
+    [0.250,0.075,z_floor,betaEx],
+    [0.200,0.075,z_floor-0.012,betaEx],
+    [0.200,0.100,z_floor-0.012,betaEx],
+    [0.200,0.100,z_safety,betaEx]])
 PuntosL=np.array([
-    [0.250,0.050,Zseguridad,betaEx],
-    [0.250,0.050,Zpiso-0.020,betaEx],
-    [0.200,0.050,Zpiso-0.020,betaEx],
-    [0.200,0.025,Zpiso-0.020,betaEx],
-    [0.225,0.025,Zseguridad,betaEx]])
+    [0.250,0.050,z_safety,betaEx],
+    [0.250,0.050,z_floor-0.020,betaEx],
+    [0.200,0.050,z_floor-0.020,betaEx],
+    [0.200,0.025,z_floor-0.020,betaEx],
+    [0.225,0.025,z_safety,betaEx]])
 
-PuntosTri=np.array([[0.200,0,Zseguridad,betaEx],[0.200,0,Zpiso-0.02,betaEx],[0.200,0.050,Zpiso-0.017,betaEx],[0.2433,0.025,Zpiso-0.005,betaEx],[0.200,0,Zpiso-0.015,betaEx],[0.200,0,Zseguridad,betaEx]])
-PuntosRectasParalelas=np.array([[0.200,-0.050,Zseguridad,betaEx],[0.200,-0.050,Zpiso-0.015,betaEx],[0.200,-0.100,Zpiso-0.015,betaEx],[0.200,-0.100,Zseguridad,betaEx],[0.225,-0.100,Zseguridad,betaEx],[0.225,-0.100,Zpiso,betaEx],[0.225,-0.050,Zpiso-0.005,betaEx],[0.225,-0.050,Zseguridad,betaEx],[0.250,-0.050,Zseguridad,betaEx],[0.250,-0.050,Zpiso,betaEx],[0.250,-0.100,Zpiso,betaEx],[0.250,-0.100,Zseguridad,betaEx]])
-PuntosEQTablero=np.array([[0.200,-0.125,Zseguridad,betaEx],[0.200,-0.125,Zpiso+0.005,betaEx],[0.200,-0.125,Zseguridad-0.005,betaEx],[0.210,-0.125,Zseguridad-0.005,betaEx],[0.210,-0.125,Zpiso+0.0085,betaEx],[0.210,-0.125,Zseguridad-0.005,betaEx],[0.220,-0.125,Zseguridad-0.005,betaEx],[0.220,-0.125,Zpiso+0.01,betaEx],[0.220,-0.125,Zseguridad-0.005,betaEx],[0.230,-0.125,Zseguridad-0.005,betaEx],[0.230,-0.125,Zpiso+0.015,betaEx],[0.230,-0.125,Zseguridad-0.005,betaEx],[0.240,-0.125,Zseguridad-0.005,betaEx],[0.240,-0.125,Zpiso+0.02,betaEx],[0.240,-0.125,Zseguridad+0.03,betaEx]])
+PuntosTri=np.array([[0.200,0,z_safety,betaEx],[0.200,0,z_floor-0.02,betaEx],[0.200,0.050,z_floor-0.017,betaEx],[0.2433,0.025,z_floor-0.005,betaEx],[0.200,0,z_floor-0.015,betaEx],[0.200,0,z_safety,betaEx]])
+PuntosRectasParalelas=np.array([[0.200,-0.050,z_safety,betaEx],[0.200,-0.050,z_floor-0.015,betaEx],[0.200,-0.100,z_floor-0.015,betaEx],[0.200,-0.100,z_safety,betaEx],[0.225,-0.100,z_safety,betaEx],[0.225,-0.100,z_floor,betaEx],[0.225,-0.050,z_floor-0.005,betaEx],[0.225,-0.050,z_safety,betaEx],[0.250,-0.050,z_safety,betaEx],[0.250,-0.050,z_floor,betaEx],[0.250,-0.100,z_floor,betaEx],[0.250,-0.100,z_safety,betaEx]])
+PuntosEQTablero=np.array([[0.200,-0.125,z_safety,betaEx],[0.200,-0.125,z_floor+0.005,betaEx],[0.200,-0.125,z_safety-0.005,betaEx],[0.210,-0.125,z_safety-0.005,betaEx],[0.210,-0.125,z_floor+0.0085,betaEx],[0.210,-0.125,z_safety-0.005,betaEx],[0.220,-0.125,z_safety-0.005,betaEx],[0.220,-0.125,z_floor+0.01,betaEx],[0.220,-0.125,z_safety-0.005,betaEx],[0.230,-0.125,z_safety-0.005,betaEx],[0.230,-0.125,z_floor+0.015,betaEx],[0.230,-0.125,z_safety-0.005,betaEx],[0.240,-0.125,z_safety-0.005,betaEx],[0.240,-0.125,z_floor+0.02,betaEx],[0.240,-0.125,z_safety+0.03,betaEx]])
 
-coorPortaHerramientasArriba=np.array([0.1,-0.2,ZseguridadPH,betaEx])
-coorPortaHerramientasAbajo=np.array([0.12,-0.21,Zportaherramientas,0])
-coorPortaHerramientasAbajoDes=np.array([0.1,-0.185,Zportaherramientas,betaEx])
+coorPortaHerramientasArriba=np.array([0.1,-0.2,z_safety_ph,betaEx])
+coorPortaHerramientasAbajo=np.array([0.12,-0.21,z_tool,0])
+coorPortaHerramientasAbajoDes=np.array([0.1,-0.185,z_tool,betaEx])
 
 
 # ---------- ROS ----------
@@ -101,9 +101,6 @@ def joint_publisher(q,t):
     point.time_from_start = rospy.Duration(t)
     state.points.append(point)
     pub.publish(state)
-    # print('Cambio de punto q:')  
-
-    fkine(q[0],q[1],q[2],q[3],q[4])
     time.sleep(3*t)
 
 
@@ -153,21 +150,9 @@ def fkine(theta_1,theta_2,theta_3,theta_4,theta_5):
     else:
         Grip=0
 
-    # print("Coordenadas:")
-    # print('Pos X: '+"%.2f" % P_x+'°\tPos Y:'+"%.2f" % P_y+'°\tPos Z:'+"%.2f" % P_z+'°\tBeta:'+"%.2f" % beta)
-
-    # if Grip==1:
-    #     print("\nEl gripper está cerrado\n")
-    # else:
-    #     print("\nEl gripper está abierto\n")
-
-    #return np.array([P_x,P_y,P_z,beta,Grip])
-
-
-# ----------     ----------
-#Función que permite realizar la trayectoria a un punto Pos en un tiempo t. Los sleep se realizan para no saturar el bus de comunicaciones
+# ---------- Helpers    ----------
 def Rut2p(Pos,t,tool):
-    q=np.concatenate(((ikine4r(Pos[0],Pos[1],Pos[2],Pos[3])+AngHomeRad[0:4]),np.array([tool])), axis=0)
+    q=np.concatenate(((ikine4r(Pos[0],Pos[1],Pos[2],Pos[3])+HOME_RADIANS[0:4]),np.array([tool])), axis=0)
     time.sleep(2*t)
     joint_publisher(q,t)
     time.sleep(2*t)
@@ -196,21 +181,18 @@ def gripper_close():
     jointCommand('', 5, 'Goal_Position', 160, 0)
 
 @cli.command()
-def home():
-    joint_publisher(AngHomeRad, 1)
+def HOME():
+    joint_publisher(HOME_RADIANS, 1)
 
 @cli.command()
 def draw_workspace():
     start_time = time.time()
 
-    #Se genera un arreglo de puntos para toda la rutina de espacio de trabajo
-    #También un arreglo de tiempos para cada movimiento en corcondancia con la distancia a recorrer.
-    ArrPos=[PosArcMinIzq[0,:],PosArcMinIzq[1,:],PosArcMinDer[0,:],PosArcMinDer[1,:],PosArcMaxDer[0,:],PosArcMaxDer[1,:],PosArcMaxIzq[0,:],PosArcMaxIzq[1,:],PosArcMinIzq[0,:],posHome]
+    ArrPos=[PosArcMinIzq[0,:],PosArcMinIzq[1,:],PosArcMinDer[0,:],PosArcMinDer[1,:],PosArcMaxDer[0,:],PosArcMaxDer[1,:],PosArcMaxIzq[0,:],PosArcMaxIzq[1,:],PosArcMinIzq[0,:],HOME]
     ArrTiempo=[1.5, 0.5, 0.5, 0.5, 1,2, 1.5, 2, 0.5, 1]
     for i in range(len(ArrPos)):
-        Rut2p(ArrPos[i],ArrTiempo[i],gripClose)
-    #Finaliza volviendo al home
-    Rut2p(posHome,1.5,gripClose)
+        Rut2p(ArrPos[i],ArrTiempo[i],CLOSED_GRIPPER_ANG)
+    Rut2p(HOME,1.5,CLOSED_GRIPPER_ANG)
 
     end_time = time.time()
     Tiempo=end_time-start_time
@@ -220,11 +202,9 @@ def draw_workspace():
 def draw_figures():
     start_time = time.time()
 
-    #CIRCULO
-    #Se realizan 50 puntos para el círculo, aunque este parámetro se puede variar
     N=50
     Rads=np.linspace(0,2*np.pi,N)
-    ZPuntos=np.ones(N)*(Zpiso)
+    ZPuntos=np.ones(N)*z_floor
     BetaPuntos=np.ones(N)*betaEx
     t=0.2
     ArrTiempo=np.ones(N)*t
@@ -233,26 +213,17 @@ def draw_figures():
     PuntosCirc[:,1]=-0.025+0.025*np.sin(Rads)
     PuntosCirc[:,2]=ZPuntos-0.01+0.005*np.cos(Rads)
     PuntosCirc[:,3]=BetaPuntos
-
-    #Se establece una posición de inicio antes de empezar el círculo
-    PosIni=[0.25,0,ZseguridadEx,betaEx]
-
-    #Se dirige a la posición de inicio
-    Rut2p(PosIni,1.5,gripClose)
-    
-    #Rutína de movimiento del círculo
+    PosIni=[0.25,0,z_safety_out,betaEx]
+    Rut2p(PosIni,1.5,CLOSED_GRIPPER_ANG)
     for i in range(N):
-        Rut2p(PuntosCirc[i,:],ArrTiempo[i],gripClose)
-    
-    #Vuelve a Home
-    Rut2p(posHome,2,gripClose)
+        Rut2p(PuntosCirc[i,:],ArrTiempo[i],CLOSED_GRIPPER_ANG)
+        
+    Rut2p(HOME,2,CLOSED_GRIPPER_ANG)
 
-
-    #RECTAS PARALELAS
     ArrTiempo=[1,1,1,1,1,1,1,1,1,1,1,1]
     for i in range(len(ArrTiempo)):
-        Rut2p(PuntosRectasParalelas[i,:],ArrTiempo[i],gripClose)
-    Rut2p(posHome,1,gripClose)
+        Rut2p(PuntosRectasParalelas[i,:],ArrTiempo[i],CLOSED_GRIPPER_ANG)
+    Rut2p(HOME,1,CLOSED_GRIPPER_ANG)
 
     end_time = time.time()  
     Tiempo=end_time-start_time
@@ -263,14 +234,14 @@ def draw_letters():
     start_time = time.time()
     ArrTiempo=[1.5,1.5,1.5,0.5,0.5,0.5,1,1,1.5,0.5,0.5,0.5,0.5,1,1]
     for i in range(8):
-        Rut2p(PuntosD[i,:],ArrTiempo[i],gripClose)
+        Rut2p(PuntosD[i,:],ArrTiempo[i],CLOSED_GRIPPER_ANG)
     time.sleep(1)
     for i in range(7):
-        Rut2p(PuntosJ[i,:],ArrTiempo[i],gripClose)
-    Rut2p(posHome,1.5,gripClose)
+        Rut2p(PuntosJ[i,:],ArrTiempo[i],CLOSED_GRIPPER_ANG)
+    Rut2p(HOME,1.5,CLOSED_GRIPPER_ANG)
     time.sleep(1)
     for i in range(5):
-        Rut2p(PuntosL[i,:],ArrTiempo[i],gripClose)
+        Rut2p(PuntosL[i,:],ArrTiempo[i],CLOSED_GRIPPER_ANG)
 
     end_time = time.time()
     Tiempo=end_time-start_time
@@ -279,17 +250,14 @@ def draw_letters():
 @cli.command()
 def tool_load():
     start_time = time.time()
-
-    Rut2p(coorPortaHerramientasArriba,0.3,gripOpen)
-    Rut2p(coorPortaHerramientasAbajo,0.5,gripOpen)
+    Rut2p(coorPortaHerramientasArriba,0.3,OPEN_GRIPPER_ANG)
+    Rut2p(coorPortaHerramientasAbajo,0.5,OPEN_GRIPPER_ANG)
     input()
     print("Apretar gripper")
-    Rut2p(coorPortaHerramientasAbajo,0.5,gripClose)
+    Rut2p(coorPortaHerramientasAbajo,0.5,CLOSED_GRIPPER_ANG)
     print("Volviendo a home")
-    Rut2p(coorPortaHerramientasArriba,1,gripClose)
-    Rut2p(posHome,1,gripClose)
-
-    #Avisa una finalización de rutina al establecer el tiempo de ejecución de esta operación
+    Rut2p(coorPortaHerramientasArriba,1,CLOSED_GRIPPER_ANG)
+    Rut2p(HOME,1,CLOSED_GRIPPER_ANG)
     end_time = time.time()
     Tiempo=end_time-start_time
     print("\ntiempo de ejecucion: %.2f s" % Tiempo)
@@ -297,15 +265,14 @@ def tool_load():
 @cli.command()
 def tool_unload():
     start_time = time.time()
-    Rut2p(coorPortaHerramientasArriba,0.3,gripClose)
-    Rut2p(coorPortaHerramientasAbajoDes,0.5,gripClose)
+    Rut2p(coorPortaHerramientasArriba,0.3,CLOSED_GRIPPER_ANG)
+    Rut2p(coorPortaHerramientasAbajoDes,0.5,CLOSED_GRIPPER_ANG)
     input()
     print("Apretar gripper")
-    Rut2p(coorPortaHerramientasAbajoDes,0.5,gripOpen)
+    Rut2p(coorPortaHerramientasAbajoDes,0.5,OPEN_GRIPPER_ANG)
     print("Volviendo a home")
-    Rut2p(coorPortaHerramientasArriba,1,gripOpen)
-    Rut2p(posHome,1,gripOpen)
-
+    Rut2p(coorPortaHerramientasArriba,1,OPEN_GRIPPER_ANG)
+    Rut2p(HOME,1,OPEN_GRIPPER_ANG)
     end_time = time.time()
     Tiempo=end_time-start_time
     print("\ntiempo de ejecucion: %.2f s" % Tiempo)
@@ -313,7 +280,6 @@ def tool_unload():
 
 # ---------- main ----------
 if __name__ == '__main__':
-    #Definir los límites de torques (se dejan en el máximo)
     Torques=[1023,1023,1023,1023,1023]
     for i in range(5):    
         jointCommand('', (i+1), 'Torque_Limit', Torques[i], 0)
